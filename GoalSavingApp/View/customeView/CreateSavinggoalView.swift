@@ -116,6 +116,7 @@ struct CreateSavinggoalView: View {
                     // completion(payload.message, true, payload)
                     showSuccessAlert = false
                     dismiss()
+                    
                 }
             }
         }
