@@ -33,7 +33,7 @@ struct CreateSavinggoalView: View {
                         TextField("Goal Name", text: $goalName)
                             .textFieldStyle(.roundedBorder)
                         
-                        // Category Picker
+                        
                         Text("Goal Category").font(.caption).bold()
                         Picker("Category", selection: $category) {
                             ForEach(categories, id: \.self) { cat in
@@ -63,7 +63,7 @@ struct CreateSavinggoalView: View {
                         CustomTextFieldInputDate(
                             title: "Savings Target Date",
                             placeholder: "Enter Saving target date",
-                            text: $targetDate,
+                            text: $targetdate,
                             rightIcon: "calendar",
                             showDoneButton: true
                         )
