@@ -80,7 +80,7 @@ struct CreateSavinggoalView: View {
                             .bold()
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color(hex: "#82C952"))
+                            .background(Color(hexString: "#82C952"))
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }

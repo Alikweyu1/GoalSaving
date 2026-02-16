@@ -58,7 +58,7 @@ struct ContentView: View {
     }
     @ViewBuilder
     func  navigate() -> some View {
-        CreateSavinggoalView1()
+        CreateSavinggoalView()
     }
     private var headerSection: some View {
             HStack(spacing: 15) {
