@@ -53,12 +53,16 @@ struct CreateSavinggoalView: View {
             .ignoresSafeArea(.all)
             .frame(width: geo.size.width,height: geo.size.height)
             .fullScreenCover(isPresented: $navigateToDashboard){
-                
+                navigate()
             }
             
             
         }
         
+    }
+    @ViewBuilder
+    func  navigate() -> some View {
+        DashboardView()
     }
 }
     

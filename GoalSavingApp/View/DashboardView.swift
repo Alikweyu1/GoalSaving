@@ -203,3 +203,7 @@ extension Color {
 #Preview {
     DashboardView()
 }
+@ViewBuilder
+func  navigate() -> some View {
+    CreateSavinggoalView()
+}
