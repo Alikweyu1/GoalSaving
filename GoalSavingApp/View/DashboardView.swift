@@ -175,8 +175,8 @@ struct GoalCard: View {
             Text("Target Amount (KES) \(target)").font(.system(size: 10))
             
             HStack(spacing: 10) {
-                ActionButton(title: "Deposit", icon: "arrow.up.right")
-                ActionButton(title: "Withdraw", icon: "arrow.down.left")
+                ActionButton(title: "Deposit", icon: "arrow.up.right",destination:nil)
+                ActionButton(title: "Withdraw", icon: "arrow.down.left",destination:AnyView(TransactionView()))
             }
         }
         .padding()
@@ -190,7 +190,7 @@ struct ActionButton: View {
     var title: String
     var icon: String
     var action: () -> Void = {}
-    
+    var destination: AnyView?
     var body: some View {
         Button(action: action) {
             HStack {

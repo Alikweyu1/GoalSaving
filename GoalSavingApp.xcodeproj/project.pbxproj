@@ -29,9 +29,33 @@
 		B0810D962F43123C00F5B89A /* GoalSavingAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoalSavingAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B08110222F43888F00F5B89A /* Exceptions for "GoalSavingApp" folder in "GoalSavingApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				View/TransactionSuccessView,
+			);
+			target = B0810D7B2F43123500F5B89A /* GoalSavingApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		B08110232F43888F00F5B89A /* Exceptions for "GoalSavingApp" folder in "Compile Sources" phase from "GoalSavingApp" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = B0810D782F43123500F5B89A /* Sources */;
+			membershipExceptions = (
+				View/TransactionSuccessView,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B0810D7E2F43123500F5B89A /* GoalSavingApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B08110222F43888F00F5B89A /* Exceptions for "GoalSavingApp" folder in "GoalSavingApp" target */,
+				B08110232F43888F00F5B89A /* Exceptions for "GoalSavingApp" folder in "Compile Sources" phase from "GoalSavingApp" target */,
+			);
 			path = GoalSavingApp;
 			sourceTree = "<group>";
 		};

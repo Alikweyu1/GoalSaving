@@ -1,0 +1,89 @@
+//
+//  TransactionSuccessView
+//  GoalSavingApp
+//
+//  Created by Ali Kweyu on 16/02/2026.
+//
+
+import SwiftUI
+
+import SwiftUI
+
+struct TransactionSuccessView: View {
+    let goal: Goal
+    let amountAdded: Double
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var showCheckmark = false
+    @State private var showDetails = false
+    
+    var body: some View {
+        ZStack {
+            // Background
+            Color.green.opacity(0.1)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 30) {
+                Spacer()
+                
+                // Animated Checkmark
+                ZStack {
+                    Circle()
+                        .fill(Color.green)
+                        .frame(width: 120, height: 120)
+                        .scaleEffect(showCheckmark ? 1 : 0.5)
+                        .opacity(showCheckmark ? 1 : 0)
+                    
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 60, weight: .bold))
+                        .foregroundColor(.white)
+                        .scaleEffect(showCheckmark ? 1 : 0.5)
+                        .opacity(showCheckmark ? 1 : 0)
+                }
+                .animation(.spring(response: 0.6, dampingFraction: 0.7), value: showCheckmark)
+                
+                // Success Message
+                VStack(spacing: 12) {
+                    Text("Transaction Successful!")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .opacity(showDetails ? 1 : 0)
+                        .offset(y: showDetails ? 0 : 20)
+                    
+                    Text("You've added money to your goal")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .opacity(showDetails ? 1 : 0)
+                        .offset(y: showDetails ? 0 : 20)
+                }
+                .animation(.easeOut(duration: 0.5).delay(0.3), value: showDetails)
+                
+                // Transaction Details Card
+                VStack(spacing: 20) {
+                    // Amount Added
+                    VStack(spacing: 8) {
+                        Text("Amount Added")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        Text("KES \(Int(amountAdded))")
+                            .font(.system(size: 36, weight: .bold))
+                            .foregroundColor(.green)
+                    }
+                    
+                    Divider()
+                    
+                    // Goal Info
+                    HStack {
+                        Image(systemName: goal.category.icon)
+                            .font(.title2)
+                            .foregroundColor(goal.color)
+                            .frame(width: 40, height: 40)
+                            .background(goal.color.opacity(0.1))
+                            .cornerRadius(8)
+                        
+                        V
+
+//#Preview {
+//    TransactionSuccessView()
+//}

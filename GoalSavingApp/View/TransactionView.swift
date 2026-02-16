@@ -35,8 +35,8 @@ struct TransactionView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: GoalViewModel
     
-    let transactionType: TransactionType
-    let goal: Goal?
+    @State private var transactionType: TransactionType?
+    @State private var goal: Goal?
     
     @State private var selectedTrip = "Outbot Trip"
     @State private var selectedFromAccount: AccountType = .coopAccount
@@ -45,9 +45,9 @@ struct TransactionView: View {
     @State private var showingSuccess = false
     
     // Mock account data
-    let availableBalance = 100103.0
-    let creditAccountBalance = 87040206.0
-    let accountNumber = "0197012A2622"
+    @State private var availableBalance = 100103.0
+    @State private var creditAccountBalance = 87040206.0
+    @State private var accountNumber = "0197012A2622"
     
     var body: some View {
         NavigationView {
@@ -63,7 +63,7 @@ struct TransactionView: View {
                         
                         Spacer()
                         
-                        Text(transactionType.title)
+                        Text(transactionType?.title ?? "" )
                             .font(.headline)
                             .foregroundColor(.white)
                         
@@ -213,7 +213,7 @@ struct TransactionView: View {
                     
                     // Action Button
                     Button(action: processTransaction) {
-                        Text(transactionType.title)
+                        Text(transactionType?.title ?? "")
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -226,17 +226,17 @@ struct TransactionView: View {
                 }
             }
             .navigationBarHidden(true)
-            .fullScreenCover(isPresented: $showingSuccess) {
-                TransactionSuccessView(
-                    amount: Double(amount) ?? 0,
-                    transactionType: transactionType
+            if showingSuccess {
+                SuccessAlertView(
+                    title: "\(goal?.name) Goal",
+                    message: "You are one step closer to reaching your target",
+                    buttonText: "Go to My Goals"
                 ) {
-                    if let goal = goal, transactionType == .deposit {
-                        if let amountValue = Double(amount) {
-                            viewModel.addMoney(to: goal, amount: amountValue)
-                        }
-                    }
+                    // Logic from your saved instructions:
+                    // completion(payload.message, true, payload)
+                    showingSuccess = false
                     dismiss()
+                    
                 }
             }
         }
@@ -285,6 +285,6 @@ struct AccountButton: View {
     }
 }
 
-#Preview {
-    TransactionView()
-}
+//#Preview {
+//    TransactionView()
+//}
