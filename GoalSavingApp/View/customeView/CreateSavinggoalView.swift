@@ -6,88 +6,116 @@
 //
 
 import SwiftUI
-struct CreateSavinggoalView: some View {
+
+struct CreateSavinggoalView: View {
     @Environment(\.dismiss) var dismiss
     @State private var goalName = ""
     @State private var category = "Travelling"
     @State private var targetAmount = ""
-    @State private var targetDate = Date()
+    @State private var targetdate = ""
+    
+    @State private var showSuccessAlert = false
     
     let categories = ["Travelling", "Family", "Education", "Health", "Investment"]
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Please let's have the following:")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding(.top)
+        ZStack {
+            NavigationView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Please let's have the following:")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .padding(.top)
 
-                VStack(alignment: .leading, spacing: 15) {
-                    // Goal Name
-                    Text("Goal Name").font(.caption).bold()
-                    CustomizeTextField(text: $goalName, placeholder: "e.g. Dubai Trip")
+                    VStack(alignment: .leading, spacing: 15) {
+                        // Goal Name
+                        Text("Goal Name").font(.caption).bold()
+                        TextField("Goal Name", text: $goalName)
+                            .textFieldStyle(.roundedBorder)
+                        
+                        // Category Picker
+                        Text("Goal Category").font(.caption).bold()
+                        Picker("Category", selection: $category) {
+                            ForEach(categories, id: \.self) { cat in
+                                Text(cat)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                        
+                        // Target Amount
+                        Text("Target Amount").font(.caption).bold()
+                        HStack {
+                            Text("KES").font(.subheadline).foregroundColor(.secondary)
+                            Divider().frame(height: 20)
+                            TextField("0.00", text: $targetAmount)
+                                .keyboardType(.decimalPad)
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                        
+                        // Date Picker (Using your custom component)
+                        CustomTextFieldInputDate(
+                            title: "Savings Target Date",
+                            placeholder: "Enter Saving target date",
+                            text: $targetDate,
+                            rightIcon: "calendar",
+                            showDoneButton: true
+                        )
+                    }
                     
-                    // Category Picker
-                    Text("Goal Category").font(.caption).bold()
-                    Picker("Category", selection: $category) {
-                        ForEach(categories, id: \.self) { cat in
-                            Text(cat)
+                    Spacer()
+                    
+                    // Create Goal Button
+                    Button(action: {
+                        // Trigger Success UI
+                        showSuccessAlert = true
+                    }) {
+                        Text("Create a Goal")
+                            .bold()
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(hex: "#82C952"))
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    .padding(.bottom)
+                }
+                .padding(.horizontal)
+                .navigationTitle("Create a Goal")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "arrow.left")
+                                .foregroundColor(.primary)
                         }
                     }
-                    .pickerStyle(.menu)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
-                    
-                    // Target Amount
-                    Text("Target Amount").font(.caption).bold()
-                    HStack {
-                        Text("KES").font(.subheadline).foregroundColor(.secondary)
-                        Divider().frame(height: 20)
-                        TextField("0.00", text: $targetAmount)
-                            .keyboardType(.decimalPad)
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.primary)
+                        }
                     }
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
-                    
-                    // Date Picker
-                    CustomTextFieldInputDate(title: "Savings Target Date", placeholder: "Enter Saving terget date", text: $targetDate,   rightIcon: "calender", showDoneButton: true)
                 }
-                
-                Spacer()
-                
-                Button(action: {
-                    // Integration: Call your success handler here
-                    let message = "Goal '\(goalName)' created successfully!"
-                    // completion(message, true, payload) //
-                    dismiss()
-                }) {
-                    Text("Create a Goal")
-                        .bold()
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(hex: "#82C952"))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .padding(.bottom)
             }
-            .padding(.horizontal)
-            .navigationTitle("Create a Goal")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "arrow.left")
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                    }
+            
+            // Reusable Success Alert Overlay
+            if showSuccessAlert {
+                SuccessAlertView(
+                    title: "\(goalName) Goal",
+                    message: "You are one step closer to reaching your target",
+                    buttonText: "Go to My Goals"
+                ) {
+                    // Logic from your saved instructions:
+                    // completion(payload.message, true, payload)
+                    showSuccessAlert = false
+                    dismiss()
                 }
             }
         }

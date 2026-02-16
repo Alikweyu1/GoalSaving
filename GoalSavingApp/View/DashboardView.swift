@@ -7,180 +7,233 @@
 
 import SwiftUI
 
+
 import SwiftUI
 
 struct DashboardView: View {
-    // Note: Assuming TransactionViewModelDemo and TransactionMockData are defined elsewhere
+    // Using your provided Mock Data and View Model
     @State private var transactions: [TransactionViewModelDemo] = TransactionMockData.TransactionDemo()
-    var filterValues: [String] = ["All", "Deposit", "Withdrawal"]
     @State private var selectedFilter = "All"
+    @State private var isAddingGoal = false
+    
+    var filterValues: [String] = ["All", "Deposit", "Withdrawal"]
+    
+    // Filtering logic based on your enum types
+    var filteredTransactions: [TransactionViewModelDemo] {
+        if selectedFilter == "All" {
+            return transactions
+        } else {
+            return transactions.filter {
+                selectedFilter == "Deposit" ? $0.type == .DEPOSIT : $0.type == .WITHDRAWAL
+            }
+        }
+    }
+
     var body: some View {
         NavigationView {
-            GeometryReader { geo in
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 20) {
-                        // Header Section
-                        HStack(spacing: 15) {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(.gray)
-                            
-                            VStack(alignment: .leading) {
-                                Text("Hello There!")
-                                    .font(.headline)
-                                Text("It is a Good Day")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            Spacer()
-                        }
-                        .padding()
-                        .background(Color.green.opacity(0.1))
-                        
-                        // Goals Header
-                        HStack {
-                            Text("My Goals")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                            Button(action: {
-                                // Add goal logic
-                            }) {
-                                HStack {
-                                    Image(systemName: "plus.circle.fill")
-                                    Text("Add a Goal")
-                                }
-                                .font(.subheadline)
-                            }
-                        }
-                        .padding(.horizontal)
-
-                        CardSection(geometry: geo)
-                        Picker("Filter", selection: $selectedFilter) {
-                                                        ForEach(filterValues, id: \.self) { value in
-                                                            Text(value).tag(value)
-                                                        }
-                        }
-                                                    .pickerStyle(SegmentedPickerStyle())
-                                                    .padding(.horizontal)
-                                                    .tint(Color(hexString: "#007D32"))
+            ZStack(alignment: .top) {
+                Color(hexString: "#F8F9FB").ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    // 1. Dark Green Header (Matches Screenshots)
+                    headerSection
                     
-                        TransactionHistoryView(geometry: geo)
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 25) {
+                            
+                            // 2. My Goals Section (Carousel)
+                            goalsCarouselSection
+                            
+                            // 3. Transaction History Section
+                            VStack(alignment: .leading, spacing: 15) {
+                                historyHeader
+                                
+                                // Filter Pills (Horizontal Scroll)
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 12) {
+                                        ForEach(filterValues, id: \.self) { filter in
+                                            FilterPill(title: filter, isSelected: selectedFilter == filter)
+                                                .onTapGesture { selectedFilter = filter }
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                }
+                                
+                                // Transaction List using your ViewModel
+                                LazyVStack(spacing: 0) {
+                                    ForEach(filteredTransactions) { transaction in
+                                        TransactionRow(item: transaction)
+                                        Divider().padding(.leading, 70)
+                                    }
+                                }
+                                .background(Color.white)
+                                .cornerRadius(15)
+                                .padding(.horizontal)
+                            }
+                        }
+                        .padding(.top, 20)
                     }
                 }
             }
             .navigationBarHidden(true)
-        }
-    }
-
-    @ViewBuilder
-    func CardSection(geometry: GeometryProxy) -> some View {
-        VStack(spacing: 16) {
-            VStack(spacing: 20) {
-                HStack {
-                    Button(action: {}) {
-                        Text("Dubai Trip")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(Color(hexString: "#007D32"))
-                            .padding(.horizontal, 16)
-                            .frame(height: 34)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color(hexString: "#007D32"), lineWidth: 1)
-                            )
-                    }
-                    Spacer()
-                }
-                
-                VStack(spacing: 12) {
-                    HStack {
-                        // Displaying the balance from your transacting account
-                        Text("KES 900.00")
-                            .font(.system(size: 32, weight: .bold))
-                            .foregroundColor(.black)
-                        
-                        Spacer()
-                        
-                        Image(systemName: "eye.fill")
-                            .foregroundColor(.gray)
-                    }
-                    
-                    ProgressView(value: 0.4) // Example progress
-                        .tint(Color(hexString: "#007D32"))
-                    
-                    HStack(spacing: 15) {
-                        // Action buttons - Utilizing your cash_transfer logic
-                        ActionButton(title: "Deposit")
-                        ActionButton(title: "Withdrawal")
-                    }
-                }
+            .fullScreenCover(isPresented: $isAddingGoal) {
+                CreateSavinggoalView()
             }
-            .padding(24)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(hexString: "#F5F5DC"))
-                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-            )
-            .padding(.horizontal)
         }
     }
-
-    @ViewBuilder
-    func TransactionHistoryView(geometry: GeometryProxy) -> some View {
-        VStack(alignment: .leading, spacing: 15) {
-            Text("Transaction History")
-                .font(.headline)
-                .padding(.horizontal)
+    
+    // MARK: - Subviews
+    
+    private var headerSection: some View {
+        HStack(spacing: 15) {
+            Image(systemName: "person.circle.fill")
+                .resizable()
+                .frame(width: 45, height: 45)
+                .foregroundColor(.white)
             
-            ForEach(transactions) { list in
-                HStack(spacing: 15) {
-                    Image(systemName: list.type == .DEPOSIT ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
-                        .resizable()
-                        .frame(width: 35, height: 35)
-                        .foregroundColor(list.type == .DEPOSIT ? .green : .red)
-                    
-                    VStack(alignment: .leading) {
-                        Text(list.type == .DEPOSIT ? "DEPOSIT" : "WITHDRAWAL")
-                            .font(.system(size: 14, weight: .bold))
-                        Text(list.REFNo)
-                            .font(.caption)
-                            .foregroundColor(.gray)
+            VStack(alignment: .leading) {
+                Text("Hello There!")
+                    .font(.system(size: 18, weight: .bold))
+                Text("It's a good day to save")
+                    .font(.system(size: 14))
+                    .opacity(0.8)
+            }
+            .foregroundColor(.white)
+            Spacer()
+        }
+        .padding()
+        .background(Color(hexString: "#063B27"))
+    }
+    
+    private var goalsCarouselSection: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            HStack {
+                Text("My Goals").font(.headline)
+                Spacer()
+                Button(action: { isAddingGoal = true }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "plus")
+                        Text("Add a Goal")
                     }
-                    
-                    Spacer()
-                    
-                    VStack(alignment: .trailing) {
-                        Text("\(list.type == .DEPOSIT ? "+" : "-") \(list.Amount)")
-                            .font(.system(size: 14, weight: .bold))
-                        Text(list.transactionDate)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(Color(hexString: "#43A047"))
+                }
+            }
+            .padding(.horizontal)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    // Card 1: Dubai Trip
+                    GoalCard(title: "Dubai Trip", balance: "900.00", target: "10,000.00", progress: 0.09, color: Color(hexString: "#063B27"))
+                    // Card 2: Kids Savings
+                    GoalCard(title: "Kids Savings", balance: "0.00", target: "120,000.00", progress: 0.0, color: Color(hexString: "#43A047"))
                 }
                 .padding(.horizontal)
-                Divider().padding(.leading, 65)
             }
         }
+    }
+    
+    private var historyHeader: some View {
+        HStack {
+            Text("Transaction History").font(.headline)
+            Spacer()
+            Text("View all")
+                .font(.system(size: 14))
+                .foregroundColor(Color(hexString: "#43A047"))
+        }
+        .padding(.horizontal)
     }
 }
 
-// Reusable Button Component
+// MARK: - Components
+
+struct GoalCard: View {
+    var title: String
+    var balance: String
+    var target: String
+    var progress: Double
+    var color: Color
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(title).font(.caption).bold()
+                Spacer()
+                Image(systemName: "ellipsis.circle.fill")
+            }
+            
+            HStack(alignment: .bottom, spacing: 4) {
+                Text(balance).font(.title2).bold()
+                Text("KES").font(.caption2).padding(.bottom, 4)
+                Image(systemName: "eye.fill").font(.caption2).padding(.bottom, 4)
+            }
+            
+            ProgressView(value: progress)
+                .tint(.white)
+                .background(Color.white.opacity(0.3))
+            
+            Text("Target Amount (KES) \(target)").font(.system(size: 10))
+            
+            HStack(spacing: 10) {
+                ActionButton(title: "Deposit", icon: "arrow.up.right")
+                ActionButton(title: "Withdraw", icon: "arrow.down.left")
+            }
+        }
+        .padding()
+        .frame(width: 280)
+        .background(color)
+        .foregroundColor(.white)
+        .cornerRadius(15)
+    }
+}
 struct ActionButton: View {
     var title: String
+    var icon: String
+    var action: () -> Void = {}
+    
     var body: some View {
-        Button(action: {}) {
-            Text(title)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(Color(hexString: "#007D32"))
-                .frame(maxWidth: .infinity)
-                .frame(height: 44)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color(hexString: "#007D32"), lineWidth: 1)
-                )
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                Text(title)
+            }
+            .font(.system(size: 12, weight: .bold))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(Color.black.opacity(0.2))
+            .cornerRadius(8)
         }
+    }
+}
+struct TransactionRow: View {
+    let item: TransactionViewModelDemo
+    
+    var body: some View {
+        HStack(spacing: 15) {
+            ZStack {
+                Circle()
+                    .fill(item.type == .DEPOSIT ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                Image(systemName: item.type == .DEPOSIT ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
+                    .foregroundColor(item.type == .DEPOSIT ? .green : .red)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.type == .DEPOSIT ? "Deposit" : "Withdrawal")
+                    .font(.system(size: 14, weight: .bold))
+                Text(item.REFNo).font(.caption).foregroundColor(.gray)
+            }
+            
+            Spacer()
+            
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(item.Amount)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(item.type == .WITHDRAWAL ? .red : .primary)
+                Text(item.transactionDate).font(.caption2).foregroundColor(.gray)
+            }
+        }
+        .padding()
     }
 }
 
@@ -206,4 +259,21 @@ extension Color {
 @ViewBuilder
 func  navigate() -> some View {
     CreateSavinggoalView()
+}
+struct FilterPill: View {
+    var title: String
+    var isSelected: Bool
+    var body: some View {
+        Text(title)
+            .font(.caption).bold()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(isSelected ? Color.green.opacity(0.1) : Color.clear)
+            .foregroundColor(isSelected ? .green : .gray)
+            .cornerRadius(20)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(isSelected ? Color.green : Color.gray.opacity(0.3), lineWidth: 1)
+            )
+    }
 }
