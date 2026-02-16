@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isSetGoat  = false
+    @State private var isSetGoal  = false
     @Environment(\.dismiss) var dismiss
     var body: some View {
         GeometryReader{ geo in
@@ -16,18 +16,7 @@ struct ContentView: View {
                 ScrollView(.vertical){
                     VStack{
                         VStack{
-                    HStack(spacing: 10){
-                        Image(systemName: "person")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 50,height: 50)
-                        VStack{
-                            Text("Hello There!")
-                            Text("It is a Good Day")
-                        }
-                        Spacer()
-                            
-                    }
+                            headerSection
                     
                 }
                 .background(Color.green.opacity(0.5))
@@ -35,27 +24,29 @@ struct ContentView: View {
                 .padding(.top,0)
                 VStack{
                     Text("Start Saving your Towards Your Goals")
-                    VStack{
-                        VStack{
-                            Text("Goal Saving")
-                            Text("Tern your goal into saving")
-                        }
-                        
-                    }
-                    .frame(height: 200)
-                    .background(Color.green.opacity(0.5))
+                    goalSavingsHeroCard()
                     .onTapGesture{
-                        isSetGoat  = true
+                        isSetGoal  = true
                     }
                 }
                         //MARK::Add Carousel
                         VStack(alignment: .leading, spacing: 10) {
-                                    
+                            TabView {
+                                InfoBanner(title: "Learn about Savings", subtitle: "Discover the world with our new savings, one step towards your goal", blockColor: Color("#2E5B1A"), bgColor: Color( "#0B2B36")
+                                )
+                                .padding(.horizontal)
+                                InfoBanner(title: "What is Goal?", subtitle: "Answers to your most asked questions", blockColor: Color("#82C952"), bgColor: Color( "#063B27")
+                                )
+                                .padding(.horizontal)
+                                
+                            }
+                            .frame(height: 160)
+                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
                 
-                    
+                        }
             }
             
-            .fullScreenCover(isPresented:$isSetGoat){
+            .fullScreenCover(isPresented:$isSetGoal){
                 navigate()
             }
                     
@@ -86,7 +77,8 @@ struct ContentView: View {
             .padding()
             .background(Color("#063B27"))
         }
-    private var goalSavingsHeroCard: some View {
+    @ViewBuilder
+     func goalSavingsHeroCard() ->  some View {
             Button(action: { isSetGoal = true }) {
                 HStack {
                     VStack(alignment: .leading, spacing: 8) {
@@ -105,7 +97,7 @@ struct ContentView: View {
                 }
                 .padding(30)
                 .foregroundColor(.white)
-                .background(Color(hex: "#82C952"))
+                .background(Color("#82C952"))
                 .cornerRadius(15)
                 .padding(.horizontal)
             }
@@ -133,7 +125,7 @@ struct InfoBanner: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(Color(hex: "#82C952"))
+                    .foregroundColor(Color("#82C952"))
                 
                 Text(subtitle)
                     .font(.system(size: 12))
