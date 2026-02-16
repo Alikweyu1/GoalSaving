@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  GoalSavingApp
 //
-//  Created by Dianna Museve on 16/02/2026.
+//  Created by Ali Kweyu on 16/02/2026.
 //
 
 import SwiftUI

@@ -2,7 +2,7 @@
 //  GoalSavingAppApp.swift
 //  GoalSavingApp
 //
-//  Created by Dianna Museve on 16/02/2026.
+//  Created by Ali Kweyu on 16/02/2026.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ import SwiftUI
 struct GoalSavingAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DashboardView()
         }
     }
 }
