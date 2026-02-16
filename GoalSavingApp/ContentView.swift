@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isSetGoat  = false
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         GeometryReader{ geo in
             NavigationView {
                 ScrollView(.vertical){
-            VStack{
-                VStack{
+                    VStack{
+                        VStack{
                     HStack(spacing: 10){
                         Image(systemName: "person")
                             .resizable()
@@ -50,10 +51,21 @@ struct ContentView: View {
                 
                 
             }
+            .navigationTitle("Create a Goal")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "arrow.left")
+                    }
+                }
+            }
             .ignoresSafeArea(.all)
             .fullScreenCover(isPresented:$isSetGoat){
                 navigate()
             }
+                    
+                    
             }
             }
             
