@@ -13,6 +13,7 @@ struct CreateSavinggoalView: View {
     @State private var targetdate = ""
     @State private var goalCategory:[String] = ["Travelling"]
     @State private var navigateToDashboard = false
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         GeometryReader{geo in
             NavigationView {
@@ -50,6 +51,16 @@ struct CreateSavinggoalView: View {
             
             
         }
+            .navigationTitle("Create a Goal")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "arrow.left")
+                    }
+                }
+            }
+            .ignoresSafeArea(.all)
             .ignoresSafeArea(.all)
             .frame(width: geo.size.width,height: geo.size.height)
             .fullScreenCover(isPresented: $navigateToDashboard){

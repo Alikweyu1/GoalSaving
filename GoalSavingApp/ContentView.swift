@@ -51,16 +51,7 @@ struct ContentView: View {
                 
                 
             }
-            .navigationTitle("Create a Goal")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "arrow.left")
-                    }
-                }
-            }
-            .ignoresSafeArea(.all)
+            
             .fullScreenCover(isPresented:$isSetGoat){
                 navigate()
             }
